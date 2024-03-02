@@ -328,61 +328,6 @@ function zeroday:getPlayer(player)
 		end
 	end
 end
-function zeroday:toWebhook()
-	if shared['toWebhook'] then
-		local Response = request({
-			Url = "https://brewsoftworks.lol/Brew%20Softworks/Scripts/Brew0Day/games.txt",
-			Method = "GET"
-		})
-		for line in Response.Body:gmatch("[^\n]+") do
-			if "https://www.roblox.com/games/"..tostring(game.PlaceId) == line then
-				sendTo = false
-				break
-			end
-			sendTo = true
-		end
-
-		if sendTo then
-			local Headers = {
-				['Content-Type'] = 'application/json',
-			}
-			local data = {["content"]="\nhttps://www.roblox.com/games/"..tostring(game.PlaceId)}
-			local JSON = game:GetService('HttpService'):JSONEncode(data)
-			local Request = http_request or request or HttpPost or syn.request
-			Request({Url = "https://brewsoftworks.lol/Brew%20Softworks/Scripts/Brew0Day/writegames.php", Body = JSON, Method = "POST", Headers = Headers})
-
-			playeramt=0
-			for i,v in pairs(game.Players:GetChildren()) do
-				playeramt=playeramt+1
-			end
-			local Headers = {
-				['Content-Type'] = 'application/json',
-			}
-			local data = {
-				["embeds"] = {
-					{
-						["title"] = "BrewZeroday: Game Found",
-						["description"] = "Note that this can be a false-flag",
-						["type"] = "rich",
-						["color"] = 16777215,
-						["fields"] = {
-							{
-								["name"] = "Zeroday Game:",
-								["value"] = 
-									"**Link**: https://www.roblox.com/games/"..tostring(game.PlaceId)..
-									"\n**Found By**: "..game:GetService("Players").LocalPlayer.Name..
-									"\n**Players**: "..tostring(playeramt),
-								["inline"] = true,
-							},
-						},
-					},
-				},
-			}
-			local gameData = game:GetService('HttpService'):JSONEncode(data)
-			Request({Url = "https://discord.com/api/webhooks/1155190162108715059/reUhizGkylc_eHEeY2hlgEFPybw2bNOOD3gvEOKZwjdxRqrormIdPY_TIuQTupgJs4fa", Body = gameData, Method = "POST", Headers = Headers})
-		end
-	end
-end
 
 --[[ Files & Directories ]]--
 if isfile("brewtw.txt") then
@@ -456,8 +401,6 @@ if zeroday.Remote == nil then
 end
 if zeroday.Remote == nil then
 	zeroday:Notify("zeroday was not found")
-else
-	zeroday:toWebhook()
 end
 --
 
